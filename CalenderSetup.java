@@ -21,34 +21,36 @@ import java.util.ArrayList;
 //contains everything needed in order to create the calender
 class CalenderSetup {
 	private static LocalDate today = LocalDate.now();
-	private static DayOfWeek dayOfWeek = DayOfWeek.from(today);
+	private static DayOfWeek todaysDayOfWeek = DayOfWeek.from(today);
 	private static LocalDate date;
 
-	private static Color darkerBlue = new Color(0, 0, 250, 150);
-	private static Color blue = new Color(0, 0, 250, 75);
+	private static Color blue = new Color(0, 0, 250, 150);
+	private static Color lightBlue = new Color(0, 0, 250, 75);
 
 	private static GridLayout layoutOfPanels = new GridLayout();
 	private static GridLayout layoutOfComponents = new GridLayout(8, 0);
 
-	private static String[] week = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-	private static String instructions = "Write here, to remove event... write only: -";
+	private static String[] dayOfWeekNames = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+	private static String instructions = "Write here. Write only:  \"-\"     to delete";
 
 	private static ArrayList<JPanel> listOfPanels = new ArrayList<JPanel>();
-	private static ArrayList<JTextArea> textAreaList;
+	private static ArrayList<JTextArea> listOfTextAreas;
 
 	private static JFrame frame = new JFrame("Calender");
-	private static JButton button;
+	private static JPanel panel;
+	private static JLabel label;
 	private static JTextArea textArea;
+	private static JButton button;
 
-	// The method that creates the calender by using the methods listed below
-	static void getWeek() {
+	// The method that creates the calender by using the other methods listed below
+	static void weekCalender() {
 
 		for (int i = 0; i < 7; i++) {
 
 			frame.add(createPanel(i));
 			listOfPanels.get(i).add(createDayOfWeekLabel(i));
 			listOfPanels.get(i).add(createDateLabel(i));
-			textAreaList = new ArrayList<JTextArea>();
+			listOfTextAreas = new ArrayList<JTextArea>();
 			for (int j = 0; j < 4; j++) {
 				listOfPanels.get(i).add(createGrayTextArea());
 			}
@@ -56,15 +58,15 @@ class CalenderSetup {
 			listOfPanels.get(i).add(createButton(i));
 
 			highlightToday(i);
-			eventAdder(button, textAreaList, textArea, darkerBlue);
+			eventAdder(button, listOfTextAreas, textArea, blue);
 			textAreaMouseListener(textArea);
 		}
 		frameSettings();
 	}
 
 	private static JPanel createPanel(int i) {
-		JPanel panel = new JPanel();
-		panel.setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, blue));
+		panel = new JPanel();
+		panel.setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, lightBlue));
 		panel.setLayout(layoutOfComponents);
 		listOfPanels.add(panel);
 		return listOfPanels.get(i);
@@ -72,21 +74,21 @@ class CalenderSetup {
 	}
 
 	private static JLabel createDayOfWeekLabel(int i) {
-		JLabel dayOfWeekLabel = new JLabel(week[i]);
-		return dayOfWeekLabel;
+		label = new JLabel(dayOfWeekNames[i]);
+		return label;
 
 	}
 
 	private static JLabel createDateLabel(int i) {
-		date = today.plusDays(i + 1 - dayOfWeek.getValue());
-		JLabel dateLabel = new JLabel(date.getMonth() + " " + date.getDayOfMonth());
-		return dateLabel;
+		date = today.plusDays(i + 1 - todaysDayOfWeek.getValue());
+		label = new JLabel(date.getMonth() + " " + date.getDayOfMonth());
+		return label;
 
 	}
 
 	private static JTextArea createGrayTextArea() {
 		textArea = new JTextArea();
-		textAreaList.add(textArea);
+		listOfTextAreas.add(textArea);
 		textArea.setBackground(Color.lightGray);
 		textArea.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
 		textArea.setEditable(false);
@@ -113,12 +115,12 @@ class CalenderSetup {
 
 	private static void highlightToday(int i) {
 		if (date == today) {
-			listOfPanels.get(i).setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, darkerBlue));
+			listOfPanels.get(i).setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, blue));
 		}
 	}
 
 	private static void eventAdder(JButton button, ArrayList<JTextArea> textAreaList, JTextArea textArea,
-			Color darkerBlue) {
+			Color blue) {
 		ActionListener buttonListener = new ActionListener() {
 			int count = 0;
 
@@ -132,7 +134,7 @@ class CalenderSetup {
 					textAreaList.get(count).setText(textArea.getText());
 				textArea.setText(instructions);
 				count = count == 3 ? count -= 3 : ++count;
-				textAreaList.get(count).setBorder(BorderFactory.createMatteBorder(0, 2, 0, 2, darkerBlue));
+				textAreaList.get(count).setBorder(BorderFactory.createMatteBorder(0, 2, 0, 2, blue));
 			}
 		};
 		button.addActionListener(buttonListener);
